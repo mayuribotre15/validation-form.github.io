@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>REGISTRATION FORM</h2>
+        </div>
+        <form class="form" id="form">
+            <div class="form-control">
+                <label for="">Username</label>
+                <input type="text" id="username" placeholder="Enter your full name" autocomplete="off">
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small>Error Msg</small>
+            </div>
+            <div class="form-control">
+                <label for="">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" autocomplete="off">
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small>Error Msg</small>
+            </div>
+            <div class="form-control">
+                <label for="">Mobile Number</label>
+                <input type="number" id="mobile" placeholder="Enter your mobile number" autocomplete="off">
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small>Error Msg</small>
+            </div>
+            <div class="form-control">
+                <label for="">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" autocomplete="off">
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small>Error Msg</small>
+            </div>
+            <div class="form-control">
+                <label for="">Re-enter Password</label>
+                <input type="password" id="rpassword" placeholder="Re-enter your password" autocomplete="off">
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <small>Error Msg</small>
+            </div>
+            <input type="submit" value="Submit" class="btn">
+        </form>
+    </div>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script type="text/javascript">
+        const form = document.getElementById('form');
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+        const mobile = document.getElementById('mobile');
+        const password = document.getElementById('password');
+        const rpassword = document.getElementById('rpassword');
+
+        // add event
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            validate();
+        })
+
+        const sendData = (usernameVal, sRate, count) => {
+                if (sRate === count) {
+                    alert('Registration Successfull');
+                    usernameVal = usernameVal.toUpperCase();
+                    swal("Welcome " + usernameVal, "Registration successfull");
+                }
+            }
+            // for final data validation
+        const successMsg = (usernameVal) => {
+            let formCon = document.getElementsByClassName('form-control');
+            var count = formCon.length - 1;
+            for (var i = 0; i < formCon.length; i++) {
+                if (formCon[i].className === 'form-control success') {
+                    var sRate = 0 + i;
+                    console.log(sRate);
+                    sendData(usernameVal, sRate, count);
+                }
+            }
+        }
+
+        // More email validation
+        const isEmail = (emailVal) => {
+            var atSymbol = emailVal.indexOf('@');
+            if (atSymbol < 1) return false;
+            var dot = emailVal.lastIndexOf('.');
+            if (dot <= atSymbol + 2) return false;
+            if (dot === emailVal.length - 1) return false;
+            return true;
+        }
+
+        // define the validate function
+        const validate = () => {
+            // Remove space
+            const usernameVal = username.value.trim();
+            const emailVal = email.value.trim();
+            const mobileVal = mobile.value.trim();
+            const passwordVal = password.value.trim();
+            const rpasswordVal = rpassword.value.trim();
+
+            // validate username
+            if (usernameVal === "") {
+                setErrorMsg(username, 'Username cannot be blank');
+            } else if (usernameVal.length <= 2) {
+                setErrorMsg(username, 'Username must be atleast 3 character');
+            } else {
+                setSuccessMsg(username);
+            }
+
+            // validate email
+            if (emailVal === "") {
+                setErrorMsg(email, 'email cannot be blank');
+            } else if (!isEmail(emailVal)) {
+                setErrorMsg(email, 'Not a valid email');
+            } else {
+                setSuccessMsg(email);
+            }
+            // validate Mobile Number
+            if (mobileVal === "") {
+                setErrorMsg(mobile, 'Mobile number cannot be blank');
+            } else if (mobileVal.length != 10) {
+                setErrorMsg(mobile, 'Must be 10 digit long');
+            } else {
+                setSuccessMsg(mobile);
+            }
+            // validate password
+            if (passwordVal === "") {
+                setErrorMsg(password, 'Password cannot be blank');
+            } else if (passwordVal.length <= 5) {
+                alert(passwordVal.length);
+                setErrorMsg(password, 'Password must be atleast 6 character');
+            } else {
+                setSuccessMsg(password);
+            }
+            // validate Re-enter password
+            if (rpasswordVal === "") {
+                setErrorMsg(rpassword, 'Password cannot be blank');
+            } else if (rpasswordVal != passwordVal) {
+                setErrorMsg(rpassword, 'Password must be same');
+            } else {
+                setSuccessMsg(rpassword);
+            }
+            successMsg(usernameVal);
+        }
+
+        function setErrorMsg(input, errormsg) {
+            const formControl = input.parentElement;
+            const small = formControl.querySelector('small');
+            formControl.className = 'form-control error';
+            small.innerText = errormsg;
+        }
+
+        function setSuccessMsg(input, errormsg) {
+            const formControl = input.parentElement;
+            formControl.className = 'form-control success';
+        }
+    </script>
+</body>
+
+</html>
